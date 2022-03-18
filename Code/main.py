@@ -8,6 +8,7 @@ def main():
     global app
     app = QApplication(sys.argv)
     gui = GUI()
+    gui.show()
 
     sys.exit(app.exec_())
 
