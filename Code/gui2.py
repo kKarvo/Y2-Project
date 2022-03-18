@@ -1,5 +1,5 @@
-import sys
-from PyQt5 import QtWidgets, QtGui, QtCore
+from customer import Customer
+from PyQt5 import QtWidgets, QtCore
 
 
 class GUI(QtWidgets.QWidget):
@@ -11,20 +11,21 @@ class GUI(QtWidgets.QWidget):
         layout.setColumnStretch(0, 1)
         layout.setColumnStretch(1, 1)
         layout.setColumnStretch(2, 2)
-        layout.setColumnStretch(3, 3)
+        layout.setColumnStretch(3, 1)
         layout.setColumnStretch(4, 1)
         self.setGeometry(2210, 290, 1340, 500)
-        # Add widgets to the layout'
+
+        # Sport dropdown
         sport_l = QtWidgets.QLabel(self)
         sport_l.setText("Laji: ")
 
-        spdd = QtWidgets.QComboBox(self)
-        spdd.addItems(
+        self.spdd = QtWidgets.QComboBox(self)
+        self.spdd.addItems(
             ["", "Tennis (30€/h)", "Sulkapallo (14€/h)", "Padel (34€/h)", "Squash (14€/h)", "Pöytätennis (10€/h)"])
-        spdd.setCurrentText("")
+        self.spdd.setCurrentText("")
 
         layout.addWidget(sport_l, 0, 0, 1, 2)
-        layout.addWidget(spdd, 1, 0, 1, 2)
+        layout.addWidget(self.spdd, 1, 0, 1, 2)
 
         # Text boxes for contact info
         name_l = QtWidgets.QLabel(self)
@@ -37,52 +38,58 @@ class GUI(QtWidgets.QWidget):
         date_l.setText("Varauksen pvm (pp.kk.vvvv): ")
         time_l = QtWidgets.QLabel(self)
         time_l.setText("Aika (HH:MM): ")
-        name = QtWidgets.QLineEdit(self)
-        email = QtWidgets.QLineEdit(self)
-        num = QtWidgets.QLineEdit(self)
-        date = QtWidgets.QLineEdit(self)
-        time = QtWidgets.QLineEdit(self)
+        self.name = QtWidgets.QLineEdit(self)
+        self.email = QtWidgets.QLineEdit(self)
+        self.num = QtWidgets.QLineEdit(self)
+        self.date = QtWidgets.QLineEdit(self)
+        self.time = QtWidgets.QLineEdit(self)
 
         layout.addWidget(name_l, 2, 0, 1, 2)
-        layout.addWidget(name, 3, 0, 1, 2)
+        layout.addWidget(self.name, 3, 0, 1, 2)
         layout.addWidget(email_l, 4, 0, 1, 2)
-        layout.addWidget(email, 5, 0, 1, 2)
+        layout.addWidget(self.email, 5, 0, 1, 2)
         layout.addWidget(num_l, 6, 0, 1, 2)
-        layout.addWidget(num, 7, 0, 1, 2)
+        layout.addWidget(self.num, 7, 0, 1, 2)
         layout.addWidget(date_l, 8, 0, 1, 2)
-        layout.addWidget(date, 9, 0, 1, 2)
+        layout.addWidget(self.date, 9, 0, 1, 2)
         layout.addWidget(time_l, 10, 0, 1, 2)
-        layout.addWidget(time, 11, 0, 1, 2)
+        layout.addWidget(self.time, 11, 0, 1, 2)
 
         # Vakiovuoro checkbox
         self.vakiovuoro = QtWidgets.QCheckBox("Vakiovuoro", self)
         layout.addWidget(self.vakiovuoro, 12, 0, 1, 1)
-        self.vakiovuoro.stateChanged.connect(lambda: self.sprt_change(spdd.currentText()))
+        self.vakiovuoro.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText()))
 
         # Racket rent
         self.rrent = QtWidgets.QCheckBox("Mailavuokra", self)
         layout.addWidget(self.rrent, 12, 1, 1, 1)
-        self.rrent.stateChanged.connect(lambda: self.sprt_change(spdd.currentText()))
+        self.rrent.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText()))
 
         # Frequency
-        frq_l = QtWidgets.QLabel(self)
-        frq_l.setText("Toistettavuus: ")
+        self.frq_l = QtWidgets.QLabel(self)
+        self.frq_l.setText("Toistettavuus: ")
 
-        frq = QtWidgets.QComboBox(self)
-        frq.addItems(["", "Viikko", "Kuukausi"])
-        frq.setCurrentText("")
+        self.frq = QtWidgets.QComboBox(self)
+        self.frq.addItems(["", "Viikko", "Kuukausi"])
+        self.frq.setCurrentText("")
 
-        count = QtWidgets.QLineEdit(self)
+        self.count = QtWidgets.QLineEdit(self)
 
         self.text = QtWidgets.QLabel(self)
         self.text.setText("ajanjakson välein.")
 
-        frq.currentTextChanged.connect(lambda: self.frq_change(frq.currentText()))
-
-        layout.addWidget(frq_l, 13, 0, 1, 1)
-        layout.addWidget(frq, 14, 0, 1, 1)
-        layout.addWidget(count, 15, 0, 1, 1)
+        layout.addWidget(self.frq_l, 13, 0, 1, 1)
+        layout.addWidget(self.frq, 14, 0, 1, 1)
+        layout.addWidget(self.count, 15, 0, 1, 1)
         layout.addWidget(self.text, 15, 1, 1, 1)
+
+        self.frq_l.hide()
+        self.frq.hide()
+        self.count.hide()
+        self.text.hide()
+
+        self.frq.currentTextChanged.connect(lambda: self.frq_change(self.frq.currentText()))
+        self.vakiovuoro.stateChanged.connect(lambda: self.vv_change())
 
         # Price
         price_l = QtWidgets.QLabel(self)
@@ -95,11 +102,12 @@ class GUI(QtWidgets.QWidget):
         layout.addWidget(price_l, 16, 0, 1, 1)
         layout.addWidget(self.price_t, 17, 0, 1, 1)
 
-        spdd.currentTextChanged.connect(lambda: self.sprt_change(spdd.currentText()))
+        self.spdd.currentTextChanged.connect(lambda: self.sprt_change(self.spdd.currentText()))
 
         # Reserve button
         button = QtWidgets.QPushButton("Varaa", self)
         button.setStyleSheet("background-color:#3FBA1D")
+        button.clicked.connect(lambda: self.press_res())
 
         layout.addWidget(button, 17, 1, 1, 1)
 
@@ -113,16 +121,24 @@ class GUI(QtWidgets.QWidget):
         self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
         layout.addWidget(self.chosendate, 0, 2, 1, 1)
 
-        # Today
+        # Today button
         self.today = QtWidgets.QPushButton("Tänään")
         layout.addWidget(self.today, 17, 4, 1, 1)
         self.today.clicked.connect(lambda: self.to_today())
 
-
-
-        self.show()
+    def vv_change(self):
+        self.frq_l.hide()
+        self.frq.hide()
+        self.count.hide()
+        self.text.hide()
+        if self.vakiovuoro.isChecked():
+            self.frq.show()
+            self.frq_l.show()
+            self.count.show()
+            self.text.show()
 
     def frq_change(self, value):
+        content = ""
         if value == "":
             content = "ajanjakson"
         elif value == "Viikko":
@@ -172,3 +188,23 @@ class GUI(QtWidgets.QWidget):
             self.price_t.setText(str(pr) + "€")
         if self.vakiovuoro.isChecked():
             self.price_t.setText(str(pr) + "€/krt")
+
+    def press_res(self):
+        out_name = self.name.text()
+        out_email = self.email.text()
+        out_num = self.num.text()
+        Customer(out_name, out_email, out_num)
+
+        # Clear fields
+        self.spdd.setCurrentText("")
+        self.frq.setCurrentText("")
+        if self.vakiovuoro.isChecked():
+            self.vakiovuoro.toggle()
+        if self.rrent.isChecked():
+            self.rrent.toggle()
+        self.name.clear()
+        self.email.clear()
+        self.num.clear()
+        self.date.clear()
+        self.time.clear()
+        self.count.clear()
