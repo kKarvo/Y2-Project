@@ -68,29 +68,23 @@ class GUI(QtWidgets.QMainWindow):
         count = QtWidgets.QLineEdit(self)
         count.setGeometry(x, y+323, 30, 25)
 
-        content = ""
-        if frq.currentText() == "":
-            content = "ajanjakson"
-        elif frq.currentText() == "Viikko":
-            content = "viikon"
-        elif frq.currentText() == "Kuukausi":
-            content = "kuukauden"
+        self.text = QtWidgets.QLabel(self)
+        self.text.setText("ajanjakson välein.")
+        self.text.move(x+37, y+320)
 
-        text = QtWidgets.QLabel(self)
-        text.setText(content + " välein.")
-        text.move(x+37, y+320)
+        frq.currentTextChanged.connect(lambda: self.frq_change(frq.currentText()))
 
         # Price
         price_l = QtWidgets.QLabel(self)
         price_l.setText("Hinta: ")
         price_l.move(x+1, y+370)
 
-        price = 402*20
-        price_t = QtWidgets.QLineEdit(self)
-        price_t.setText(str(price))
-        price_t.setReadOnly(True)
-        price_t.setGeometry(x, y+400, 100, 40)
+        self.price_t = QtWidgets.QLineEdit(self)
+        self.price_t.setText(str(0))
+        self.price_t.setReadOnly(True)
+        self.price_t.setGeometry(x, y+400, 100, 40)
 
+        spdd.currentTextChanged.connect(lambda: self.sprt_change(spdd.currentText()))
 
         # Reserve button
         button = QtWidgets.QPushButton("Varaa", self)
@@ -98,3 +92,28 @@ class GUI(QtWidgets.QMainWindow):
         button.setStyleSheet("background-color:#3FBA1D")
 
         self.show()
+
+    def frq_change(self, value):
+        if value == "":
+            content = "ajanjakson"
+        elif value == "Viikko":
+            content = "viikon"
+        elif value == "Kuukausi":
+            content = "kuukauden"
+        self.text.setText(content + " välein.")
+
+    def sprt_change(self, value):
+        pr = 0
+        if value == "Tennis":
+            pr = 30
+        elif value == "Squash":
+            pr = 20
+        elif value == "Sulkapallo":
+            pr = 15
+        elif value == "Padel":
+            pr = 35
+        elif value == "Pöytätennis":
+            pr = 10
+        self.price_t.setText(str(2*pr))
+
+
