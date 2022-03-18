@@ -80,7 +80,7 @@ class GUI(QtWidgets.QMainWindow):
         price_l.move(x+1, y+370)
 
         self.price_t = QtWidgets.QLineEdit(self)
-        self.price_t.setText(str(0))
+        self.price_t.setText("")
         self.price_t.setReadOnly(True)
         self.price_t.setGeometry(x, y+400, 100, 40)
 
@@ -114,6 +114,8 @@ class GUI(QtWidgets.QMainWindow):
             pr = 35
         elif value == "Pöytätennis":
             pr = 10
-        self.price_t.setText(str(2*pr))
-
+        if pr != 0:
+            self.price_t.setText(str(2*pr) + "€")
+        else:
+            self.price_t.setText("")
 
