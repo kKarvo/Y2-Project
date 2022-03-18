@@ -1,25 +1,19 @@
 import sys
-from PyQt5 import QtWidgets
-
-
-
-class Calendar(QtWidgets.QCalendarWidget):
-    def __init__(self, parent = None):
-        super(Calendar, self).__init__(parent)
+from PyQt5 import QtWidgets, QtGui, QtCore
 
 
 class GUI(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Ajanvarausjärjestelmä")
-        self.resize(1000, 500)
         layout = QtWidgets.QGridLayout()
         self.setLayout(layout)
         layout.setColumnStretch(0, 1)
         layout.setColumnStretch(1, 1)
-        layout.setColumnStretch(2, 1)
+        layout.setColumnStretch(2, 2)
         layout.setColumnStretch(3, 3)
-        self.setGeometry(2780, 490, 1000, 500)
+        layout.setColumnStretch(4, 1)
+        self.setGeometry(2210, 290, 1340, 500)
         # Add widgets to the layout'
         sport_l = QtWidgets.QLabel(self)
         sport_l.setText("Laji: ")
@@ -107,11 +101,24 @@ class GUI(QtWidgets.QWidget):
         button = QtWidgets.QPushButton("Varaa", self)
         button.setStyleSheet("background-color:#3FBA1D")
 
-        layout.addWidget(button, 17, 2, 1, 1)
+        layout.addWidget(button, 17, 1, 1, 1)
 
         # Calendar
-        self.Calendar = Calendar(self)
-        layout.addWidget(self.Calendar, 0, 3, 17, 1)
+        self.calendar = QtWidgets.QCalendarWidget(self)
+        self.calendar.setGridVisible(True)
+        self.calendar.selectionChanged.connect(self.calendar_date)
+        layout.addWidget(self.calendar, 0, 3, 17, 2)
+
+        self.chosendate = QtWidgets.QLabel(self)
+        self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
+        layout.addWidget(self.chosendate, 0, 2, 1, 1)
+
+        # Today
+        self.today = QtWidgets.QPushButton("Tänään")
+        layout.addWidget(self.today, 17, 4, 1, 1)
+        self.today.clicked.connect(lambda: self.to_today())
+
+
 
         self.show()
 
@@ -124,9 +131,14 @@ class GUI(QtWidgets.QWidget):
             content = "kuukauden"
         self.text.setText(content + " välein.")
 
-    def vv_change(self, value):
-        if self.vakiovuoro.isChecked():
-            self.price_t.setText(self.price_t + "/vko")
+    def to_today(self):
+        self.calendar.setSelectedDate(QtCore.QDate.currentDate())
+
+    def calendar_date(self):
+        date = self.calendar.selectedDate()
+        datestring = str(date.toPyDate())
+
+        self.chosendate.setText(datestring)
 
     def sprt_change(self, value):
         pr = 0
@@ -146,6 +158,9 @@ class GUI(QtWidgets.QWidget):
         elif value == "Pöytätennis (10€/h)":
             pr = 10
             raq = 2
+        elif value == "":
+            pr = 0
+            raq = 0
         if pr != 0:
             self.price_t.setText(str(pr) + "€")
             self.rrent.setText("Mailavuokra " + str(raq) + "€")
@@ -156,4 +171,4 @@ class GUI(QtWidgets.QWidget):
             pr += raq
             self.price_t.setText(str(pr) + "€")
         if self.vakiovuoro.isChecked():
-            self.price_t.setText(str(pr) + "€/vko")
+            self.price_t.setText(str(pr) + "€/krt")
