@@ -13,6 +13,7 @@ class GUI(QtWidgets.QMainWindow):
         # Dual monitor
         self.left = int(1920+(1920-self.width)/2)
         self.top = int((1080-self.height)/2)
+        self.prc = ""
         self.initUI()
 
     def initUI(self):
@@ -28,20 +29,20 @@ class GUI(QtWidgets.QMainWindow):
 
         spdd = QtWidgets.QComboBox(self)
         spdd.setGeometry(x, y+30, 120, 20)
-        spdd.addItems(["", "Tennis", "Sulkapallo", "Padel", "Squash", "Pöytätennis"])
+        spdd.addItems(["", "Tennis (30€/h)", "Sulkapallo (14€/h)", "Padel (34€/h)", "Squash (14€/h)", "Pöytätennis (10€/h)"])
         spdd.setCurrentText("")
 
         # Text boxes for contact info
         name_l = QtWidgets.QLabel(self)
-        name_l.setText("Name: ")
+        name_l.setText("Nimi: ")
         name_l.move(x+1, y+50)
 
         date_l = QtWidgets.QLabel(self)
-        date_l.setText("Date: ")
+        date_l.setText("Pvm (pp.kk.vvvv): ")
         date_l.move(x+1, y+110)
 
         time_l = QtWidgets.QLabel(self)
-        time_l.setText("Time: ")
+        time_l.setText("Aika (HH:MM): ")
         time_l.move(x+1, y+170)
 
         name = QtWidgets.QLineEdit(self)
@@ -74,6 +75,11 @@ class GUI(QtWidgets.QMainWindow):
 
         frq.currentTextChanged.connect(lambda: self.frq_change(frq.currentText()))
 
+        # Racket rent
+        self.rrent = QtWidgets.QCheckBox("Mailavuokra" + self.prc, self)
+        self.rrent.move(x+150, y+235)
+        self.rrent.stateChanged.connect(lambda: self.sprt_change(spdd.currentText()))
+
         # Price
         price_l = QtWidgets.QLabel(self)
         price_l.setText("Hinta: ")
@@ -104,18 +110,29 @@ class GUI(QtWidgets.QMainWindow):
 
     def sprt_change(self, value):
         pr = 0
-        if value == "Tennis":
+        raq = ""
+        if value == "Tennis (30€/h)":
             pr = 30
-        elif value == "Squash":
-            pr = 20
-        elif value == "Sulkapallo":
-            pr = 15
-        elif value == "Padel":
-            pr = 35
-        elif value == "Pöytätennis":
+            raq = 3
+        elif value == "Squash (14€/h)":
+            pr = 14
+            raq = 3
+        elif value == "Sulkapallo (14€/h)":
+            pr = 14
+            raq = 3
+        elif value == "Padel (34€/h)":
+            pr = 34
+            raq = 4
+        elif value == "Pöytätennis (10€/h)":
             pr = 10
+            raq = 2
         if pr != 0:
-            self.price_t.setText(str(2*pr) + "€")
+            self.price_t.setText(str(pr) + "€")
+            self.rrent.setText("Mailavuokra " + str(raq) + "€")
         else:
             self.price_t.setText("")
+            self.rrent.setText("Mailavuokra")
+        if self.rrent.isChecked():
+            pr += raq
+            self.price_t.setText(str(pr) + "€")
 
