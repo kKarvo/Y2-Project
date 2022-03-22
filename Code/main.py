@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication
 
 from gui2 import GUI
 
+
 def main():
 
     global app

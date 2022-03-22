@@ -9,14 +9,14 @@ class GUI(QtWidgets.QMainWindow):
         self.width = 1000
         self.height = 500
         # Single monitor
-        #self.left = int((1920-self.width)/2)
+        self.left = int((1920-self.width)/2)
         # Dual monitor
-        self.left = int(1920+(1920-self.width)/2)
+        #self.left = int(1920+(1920-self.width)/2)
         self.top = int((1080-self.height)/2)
         self.prc = ""
-        self.initUI()
+        self.initLeftUI()
 
-    def initUI(self):
+    def initLeftUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         x = 20

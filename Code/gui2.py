@@ -13,7 +13,7 @@ class GUI(QtWidgets.QWidget):
         layout.setColumnStretch(2, 2)
         layout.setColumnStretch(3, 1)
         layout.setColumnStretch(4, 1)
-        self.setGeometry(2210, 290, 1340, 500)
+        self.setGeometry(2210-1920, 290, 1340, 500)
 
         # Sport dropdown
         sport_l = QtWidgets.QLabel(self)
@@ -82,7 +82,6 @@ class GUI(QtWidgets.QWidget):
         layout.addWidget(self.frq, 14, 0, 1, 1)
         layout.addWidget(self.count, 15, 0, 1, 1)
         layout.addWidget(self.text, 15, 1, 1, 1)
-
         self.frq_l.hide()
         self.frq.hide()
         self.count.hide()
@@ -151,14 +150,11 @@ class GUI(QtWidgets.QWidget):
         self.calendar.setSelectedDate(QtCore.QDate.currentDate())
 
     def calendar_date(self):
-        date = self.calendar.selectedDate()
-        datestring = str(date.toPyDate())
-
-        self.chosendate.setText(datestring)
+        self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
 
     def sprt_change(self, value):
         pr = 0
-        raq = ""
+        raq = 0
         if value == "Tennis (30€/h)":
             pr = 30
             raq = 3
@@ -180,7 +176,7 @@ class GUI(QtWidgets.QWidget):
         if pr != 0:
             self.price_t.setText(str(pr) + "€")
             self.rrent.setText("Mailavuokra " + str(raq) + "€")
-        else:
+        elif pr == 0:
             self.price_t.setText("")
             self.rrent.setText("Mailavuokra")
         if self.rrent.isChecked():
@@ -190,11 +186,6 @@ class GUI(QtWidgets.QWidget):
             self.price_t.setText(str(pr) + "€/krt")
 
     def press_res(self):
-        out_name = self.name.text()
-        out_email = self.email.text()
-        out_num = self.num.text()
-        Customer(out_name, out_email, out_num)
-
         # Clear fields
         self.spdd.setCurrentText("")
         self.frq.setCurrentText("")
