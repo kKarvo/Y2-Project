@@ -1,0 +1,25 @@
+Varausjärjestelmä
+
+Checkpoint1
+
+## Tämänhetkiset ominaisuudet
+
+Tässä vaiheessa ohjelman käyttöliittymä on tehty. Keskimmäiseen paneeliin vielä lisätään näkymä päivän vapaista ajoista.
+Tässä vaiheessa itse ohjelmalla ei voi tehdä paljoa, mutta käyttöliittymään voi laittaa varaukselle tarvittavat tiedot
+ja varaa-nappi tyhjentää kentät seuraavaa varausta varten. Kalenterista voi myös valita päiviä ja päivä päivittyy
+keskimmäiseen paneelin. Tänään-nappi asettaa kalenterin järjestelmän asetettuun päivään.
+
+## Käyttöohje
+
+Ohjelman voi ajaa.
+Ohjelma käynnistetään ajamalla main-funktio. Varmista, että main funktiossa GUI on importattu gui2 tiedostosta.
+
+## Aikataulu
+
+Tähän mennessä GUI:n luomiseen olen käyttänyt noin 9h.
+Muutoksia aikatauluun ei ole ilmennyt.x
+
+## Muuta
+
+Käyttöliittymään tuli muutos, missä loin kolmannen paneelin, johon tulee päivän vapaat ajat näkyviin. Implementoin myös
+joitain vaativan projektin vaatimuksia työhön, sillä ne olivat luonnollisia lisätä eivätkä vieneet liikaa aikaa.
