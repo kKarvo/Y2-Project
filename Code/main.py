@@ -5,7 +5,7 @@ from io import StringIO
 from customer import Customer
 from reservation import Reservation
 
-from gui2 import GUI
+from gui import GUI
 
 
 def read_save_file():

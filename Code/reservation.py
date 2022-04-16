@@ -13,7 +13,23 @@ class Reservation:
     def set_variables(self, sport, date, time, price):
         self.sport = sport
         self.price = price
-        date_components = "".join(date.split("."))
+        datestring = date.split(".")
+        if len(datestring) == 3:
+            try:
+                i = 0
+                for x in datestring:
+                    datestring[i] = int(x)
+                    i += 1
+            except ValueError:
+                print("Date format error.")
+            if datestring[0] < 10:
+                datestring[0] = '0' + str(datestring[0])
+            if datestring[1] < 10:
+                datestring[1] = '0' + str(datestring[1])
+            datestring[2] = str(datestring[2])
+            date_components = "".join(datestring)
+        else:
+            date_components = "".join(date.split("."))
         if len(date_components) != 8:
             print("Date format error.")
             raise ValueError
