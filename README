@@ -1,6 +1,6 @@
 Varausjärjestelmä
 
-Checkpoint1
+Checkpoint2
 
 ## Tämänhetkiset ominaisuudet
 
@@ -9,15 +9,23 @@ Tässä vaiheessa itse ohjelmalla ei voi tehdä paljoa, mutta käyttöliittymä�
 ja varaa-nappi tyhjentää kentät seuraavaa varausta varten. Kalenterista voi myös valita päiviä ja päivä päivittyy
 keskimmäiseen paneelin. Tänään-nappi asettaa kalenterin järjestelmän asetettuun päivään.
 
+Checkpoint 2 update:
+Taustaohjelmistoa alettu tekemään, vielä vajanaista. Nyt kuitenkin ohjelma lisää tekstitiedostosta luetut lohkoittain kerrotut tiedot ja tekee niiden avulla varauksia. 
+
 ## Käyttöohje
 
 Ohjelman voi ajaa.
 Ohjelma käynnistetään ajamalla main-funktio. Varmista, että main funktiossa GUI on importattu gui2 tiedostosta.
 
+Sama kuin viimeksi mutta GUI importattu gui tiedostosta, gui2 tiedostoa ei enää ole. OHjelman pitäisi pyöriä kaatumatta, mutta käyttöliittymään kirjoitetut tiedot eivät vielä tallennu main funktiossa sijaitseviin listoihin. Saatan luoda chunkIO tyyppisen tiedoston johon tallentaisin kaiken helpommin ja jossa käsittelisin kaiken lohkopohjaisen lukemisen mikä nyt on vielä mainissa.
+
 ## Aikataulu
 
 Tähän mennessä GUI:n luomiseen olen käyttänyt noin 9h.
-Muutoksia aikatauluun ei ole ilmennyt.x
+Muutoksia aikatauluun ei ole ilmennyt. 
+Käyttänyt GUI:n hiomiseen ja backendin tekemiseen noin. 8h. Ei muutoksia aikataulussa vielä. 
+
+
 
 ## Muuta
 
