@@ -1,13 +1,12 @@
-import gui2
 
 
 class Customer:
 
     def __init__(self, name, email, num):
-        self.set_name(name)
+        self.name = name
         self.email = email
         self.num = num
-        self.reservation = None
+        self.reservations = []
 
     def get_name(self):
         return self.name
@@ -17,3 +16,6 @@ class Customer:
 
     def get_num(self):
         return self.num
+
+    def add_reservation(self, reservation):
+        self.reservations.append(reservation)

@@ -1,4 +1,6 @@
 from customer import Customer
+from reservation import Reservation
+
 from PyQt5 import QtWidgets, QtCore
 
 
@@ -14,6 +16,11 @@ class GUI(QtWidgets.QWidget):
         layout.setColumnStretch(3, 1)
         layout.setColumnStretch(4, 1)
         self.setGeometry(2210-1920, 290, 1340, 500)
+
+        self.line = ''
+        self.pr = 0
+        self.calendar = QtWidgets.QCalendarWidget(self)
+        self.sport_number = 0
 
         # Sport dropdown
         sport_l = QtWidgets.QLabel(self)
@@ -106,12 +113,14 @@ class GUI(QtWidgets.QWidget):
         # Reserve button
         button = QtWidgets.QPushButton("Varaa", self)
         button.setStyleSheet("background-color:#3FBA1D")
+        button.clicked.connect(lambda: self.init_customer())
+        button.clicked.connect(lambda: self.init_reservation())
+        button.clicked.connect(lambda: self.init_line())
         button.clicked.connect(lambda: self.press_res())
 
         layout.addWidget(button, 17, 1, 1, 1)
 
         # Calendar
-        self.calendar = QtWidgets.QCalendarWidget(self)
         self.calendar.setGridVisible(True)
         self.calendar.selectionChanged.connect(self.calendar_date)
         layout.addWidget(self.calendar, 0, 3, 17, 2)
@@ -153,37 +162,66 @@ class GUI(QtWidgets.QWidget):
         self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
 
     def sprt_change(self, value):
-        pr = 0
         raq = 0
         if value == "Tennis (30€/h)":
-            pr = 30
+            self.pr = 30
             raq = 3
+            self.sport_number = 1
         elif value == "Squash (14€/h)":
-            pr = 14
+            self.pr = 14
             raq = 3
+            self.sport_number = 2
         elif value == "Sulkapallo (14€/h)":
-            pr = 14
+            self.pr = 14
             raq = 3
+            self.sport_number = 3
         elif value == "Padel (34€/h)":
-            pr = 34
+            self.pr = 34
             raq = 4
+            self.sport_number = 4
         elif value == "Pöytätennis (10€/h)":
-            pr = 10
+            self.pr = 10
             raq = 2
+            self.sport_number = 5
         elif value == "":
-            pr = 0
+            self.pr = 0
             raq = 0
-        if pr != 0:
-            self.price_t.setText(str(pr) + "€")
+        if self.pr != 0:
+            self.price_t.setText(str(self.pr) + "€")
             self.rrent.setText("Mailavuokra " + str(raq) + "€")
-        elif pr == 0:
+        elif self.pr == 0:
             self.price_t.setText("")
             self.rrent.setText("Mailavuokra")
         if self.rrent.isChecked():
-            pr += raq
-            self.price_t.setText(str(pr) + "€")
+            self.pr += raq
+            self.price_t.setText(str(self.pr) + "€")
         if self.vakiovuoro.isChecked():
-            self.price_t.setText(str(pr) + "€/krt")
+            self.price_t.setText(str(self.pr) + "€/krt")
+
+    def init_customer(self):
+        self.temp_customer = Customer(self.name.text(), self.email.text(), self.num.text())
+
+    def init_reservation(self):
+        self.reservation = Reservation()
+        self.reservation.set_variables(self.sport_number, self.date.text(), self.time.text(), self.pr)
+        self.temp_customer.add_reservation(self.reservation)
+
+
+    def init_line(self):
+        self.line = ''
+        i = 0
+        name = ''.join(self.name.text().split(" "))
+        self.line += 'NAM'
+        if len(name) < 10:
+            self.line += '0'
+        self.line += str(len(name)) + name
+        self.line += 'NUM10' + str(self.num.text())
+        self.line += 'EML' + str(len(self.email.text())) + self.email.text()
+        self.line += 'DAT08' + str(self.reservation.return_date())
+        self.line += 'TIM04' + str(self.reservation.return_time())
+        self.line += 'SPO020' + str(self.sport_number)
+        self.line += 'PRC' + str(self.reservation.return_price())
+        self.line += 'END00\n'
 
     def press_res(self):
         # Clear fields
@@ -199,3 +237,5 @@ class GUI(QtWidgets.QWidget):
         self.date.clear()
         self.time.clear()
         self.count.clear()
+        f = open('data.txt', 'a')
+        f.write(self.line)
