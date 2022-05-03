@@ -19,3 +19,6 @@ class Customer:
 
     def add_reservation(self, reservation):
         self.reservations.append(reservation)
+
+    def get_reservations(self):
+        return self.reservations

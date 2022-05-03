@@ -26,6 +26,8 @@ class Reservation:
                 datestring[0] = '0' + str(datestring[0])
             if datestring[1] < 10:
                 datestring[1] = '0' + str(datestring[1])
+            datestring[0] = str(datestring[0])
+            datestring[1] = str(datestring[1])
             datestring[2] = str(datestring[2])
             date_components = "".join(datestring)
         else:

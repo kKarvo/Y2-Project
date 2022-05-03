@@ -1,5 +1,4 @@
-def init():
-    global clist
-    global rlist
-    clist = []
-    rlist = []
+from chunkIO import ChunkIO
+
+global chunk_IO
+chunk_IO = ChunkIO()

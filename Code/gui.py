@@ -1,6 +1,7 @@
 from customer import Customer
 from reservation import Reservation
-import settings
+from settings import chunk_IO
+
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -8,6 +9,7 @@ from PyQt5 import QtWidgets, QtCore
 class GUI(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        self.is_reserved = False
         self.setWindowTitle("Ajanvarausjärjestelmä")
         layout = QtWidgets.QGridLayout()
         self.setLayout(layout)
@@ -114,8 +116,8 @@ class GUI(QtWidgets.QWidget):
         # Reserve button
         button = QtWidgets.QPushButton("Varaa", self)
         button.setStyleSheet("background-color:#3FBA1D")
-        button.clicked.connect(lambda: self.init_customer())
         button.clicked.connect(lambda: self.init_reservation())
+        button.clicked.connect(lambda: self.init_customer())
         button.clicked.connect(lambda: self.init_line())
         button.clicked.connect(lambda: self.press_res())
 
@@ -134,6 +136,11 @@ class GUI(QtWidgets.QWidget):
         self.today = QtWidgets.QPushButton("Tänään")
         layout.addWidget(self.today, 17, 4, 1, 1)
         self.today.clicked.connect(lambda: self.to_today())
+
+        # History button
+        self.history = QtWidgets.QPushButton("Historia")
+        layout.addWidget(self.history, 17, 3, 1, 1)
+        self.history.clicked.connect(lambda: self.show_history())
 
     def vv_change(self):
         self.frq_l.hide()
@@ -200,14 +207,23 @@ class GUI(QtWidgets.QWidget):
             self.price_t.setText(str(self.pr) + "€/krt")
 
     def init_customer(self):
-        self.temp_customer = Customer(self.name.text(), self.email.text(), self.num.text())
-        settings.clist.append(self.temp_customer)
+        if not self.is_reserved:
+            chunk_IO.add_customer(''.join(self.name.text().split(' ')), self.email.text(), self.num.text(), self.reservation)
 
     def init_reservation(self):
+        self.is_reserved = False
         self.reservation = Reservation()
         self.reservation.set_variables(self.sport_number, self.date.text(), self.time.text(), self.pr)
-        self.temp_customer.add_reservation(self.reservation)
-        settings.rlist.append(self.reservation)
+        check = chunk_IO.check_reservation(self.reservation)
+        if not check:
+            chunk_IO.reservationlist.append(self.reservation)
+        else:
+            self.is_reserved = True
+            error = QtWidgets.QMessageBox()
+            error.setIcon(QtWidgets.QMessageBox.Information)
+            error.setWindowTitle("Invalid reservation time")
+            error.setText("This time is already reserved. Please choose another time.")
+            error.exec_()
 
     def init_line(self):
         self.line = ''
@@ -239,7 +255,42 @@ class GUI(QtWidgets.QWidget):
         self.date.clear()
         self.time.clear()
         self.count.clear()
-        print(settings.clist)
-        print(settings.rlist)
-        f = open('data.txt', 'a')
-        f.write(self.line)
+        if not self.is_reserved:
+            f = open('data.txt', 'a')
+            f.write(self.line)
+
+    def show_history(self):
+        name = ''.join(self.name.text().split(" "))
+        reservations_popup = QtWidgets.QMessageBox()
+        reservations_popup.setIcon(QtWidgets.QMessageBox.Question)
+        reservations_popup.setWindowTitle("Varaushistoria")
+        for x in chunk_IO.customerlist:
+            if name == x.get_name():
+                popup_text = ''
+                popup_text += "Varaukset nimellä " + self.name.text() + ":\n\n"
+                reservation_list = x.get_reservations()
+                for i in reservation_list:
+                    if i.get_sport() == 1:
+                        popup_text += "Tennis "
+                    elif i.get_sport() == 2:
+                        popup_text += "Squash "
+                    elif i.get_sport() == 3:
+                        popup_text += "Sulkapallo "
+                    elif i.get_sport() == 4:
+                        popup_text += "Padel "
+                    elif i.get_sport() == 5:
+                        popup_text += "Pöytätennis "
+                    popup_text += str(i.get_day()) + "." + str(i.get_month()) + "." + str(i.get_year()) + ""
+                    popup_text += ", " + str(i.get_hour()) + ":"
+                    if i.get_minute() < 10:
+                        popup_text += "0"
+                    popup_text += str(i.get_minute()) + ", " + str(i.get_price()) + "€\n"
+                break
+            elif name == '':
+                popup_text = "Syötä nimi jonka varaukset haluat nähdä 'Nimi:' kenttään."
+                break
+            else:
+                popup_text = "Ei varauksia annetulla nimellä."
+        reservations_popup.setText(popup_text)
+        reservations_popup.exec_()
+        self.name.clear()
