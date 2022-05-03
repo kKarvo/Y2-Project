@@ -1,4 +1,5 @@
 import sys
+import settings
 from PyQt5.QtWidgets import QApplication
 
 from io import StringIO
@@ -47,11 +48,13 @@ def read_save_file():
             reservation = Reservation()
             reservation.set_variables(sport_number, date, time, price)
             reservation_list.append(reservation)
+            settings.rlist.append(reservation)
             is_new_in_list = False
             if len(customer_list) == 0:
                 newcustomer = Customer(name, email, num)
                 newcustomer.add_reservation(reservation)
                 customer_list.append(newcustomer)
+                settings.clist.append(newcustomer)
             else:
                 for x in customer_list:
                     if x.get_name() == name and x.get_num() == num and x.get_email() == email:
@@ -61,6 +64,7 @@ def read_save_file():
                     newcustomer = Customer(name, email, num)
                     newcustomer.add_reservation(reservation)
                     customer_list.append(newcustomer)
+                    settings.clist.append(newcustomer)
         except:
             print("Reading data file failed.")
     return customer_list
@@ -80,6 +84,7 @@ def get_chunk_name(input):
 def get_chunk_size(input):
     return int(''.join(input.read(2)))
 
+
 def main():
     customer_list = read_save_file()
 
@@ -87,7 +92,14 @@ def main():
     gui = GUI()
     gui.show()
 
+    print(settings.clist)
+    print(settings.rlist)
+    #for i in customerlist:
+    #    print(i.get_name())
+
     sys.exit(app.exec_())
 
+
 if __name__ == "__main__":
+    settings.init()
     main()

@@ -1,6 +1,6 @@
 from customer import Customer
 from reservation import Reservation
-import main
+import settings
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -201,12 +201,13 @@ class GUI(QtWidgets.QWidget):
 
     def init_customer(self):
         self.temp_customer = Customer(self.name.text(), self.email.text(), self.num.text())
+        settings.clist.append(self.temp_customer)
 
     def init_reservation(self):
         self.reservation = Reservation()
         self.reservation.set_variables(self.sport_number, self.date.text(), self.time.text(), self.pr)
         self.temp_customer.add_reservation(self.reservation)
-
+        settings.rlist.append(self.reservation)
 
     def init_line(self):
         self.line = ''
@@ -238,5 +239,7 @@ class GUI(QtWidgets.QWidget):
         self.date.clear()
         self.time.clear()
         self.count.clear()
+        print(settings.clist)
+        print(settings.rlist)
         f = open('data.txt', 'a')
         f.write(self.line)
