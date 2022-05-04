@@ -54,6 +54,8 @@ class GUI(QtWidgets.QWidget):
         self.email = QtWidgets.QLineEdit(self)
         self.num = QtWidgets.QLineEdit(self)
         self.date = QtWidgets.QLineEdit(self)
+        self.date.setText('{}.{}.{}'.format(self.calendar.selectedDate().day(), self.calendar.selectedDate().month(), self.calendar.selectedDate().year()))
+        self.date.setReadOnly(True)
         self.time = QtWidgets.QLineEdit(self)
         self.length = QtWidgets.QComboBox(self)
         self.length.addItems(['', '60 min', '90 min', '120 min', '150 min', '180 min'])
@@ -118,7 +120,7 @@ class GUI(QtWidgets.QWidget):
         layout.addWidget(self.price_t, 17, 0, 1, 1)
 
         self.spdd.currentTextChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
-        self.length.currentTextChanged.connect(lambda:self.sprt_change(self.spdd.currentText(), self.length.currentText()))
+        self.length.currentTextChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
 
         # Reserve button
         button = QtWidgets.QPushButton("Varaa", self)
@@ -174,7 +176,10 @@ class GUI(QtWidgets.QWidget):
         self.calendar.setSelectedDate(QtCore.QDate.currentDate())
 
     def calendar_date(self):
+        temp_date = self.calendar.selectedDate()
+        string = '{}.{}.{}'.format(temp_date.day(), temp_date.month(), temp_date.year())
         self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
+        self.date.setText(string)
 
     def sprt_change(self, value, length):
         raq = 0
@@ -182,23 +187,23 @@ class GUI(QtWidgets.QWidget):
         if length != '':
             h = int(length.split(" ")[0])/60
         if value == "Tennis (30€/h)":
-            self.pr = 30*h
+            self.pr = int(30*h)
             raq = 3
             self.sport_number = 1
         elif value == "Squash (14€/h)":
-            self.pr = 14*h
+            self.pr = int(14*h)
             raq = 3
             self.sport_number = 2
         elif value == "Sulkapallo (14€/h)":
-            self.pr = 14*h
+            self.pr = int(14*h)
             raq = 3
             self.sport_number = 3
         elif value == "Padel (32€/h)":
-            self.pr = 32*h
+            self.pr = int(32*h)
             raq = 4
             self.sport_number = 4
         elif value == "Pöytätennis (10€/h)":
-            self.pr = 10*h
+            self.pr = int(10*h)
             raq = 2
             self.sport_number = 5
         elif value == "":
@@ -268,6 +273,7 @@ class GUI(QtWidgets.QWidget):
         self.time.clear()
         self.count.clear()
         self.length.setCurrentText("")
+        print("{}c{}r".format(len(chunk_IO.get_customers()), len(chunk_IO.get_reservations())))
         if not self.is_reserved:
             f = open('data.txt', 'a')
             f.write(self.line)
