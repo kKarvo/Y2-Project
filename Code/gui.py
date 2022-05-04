@@ -41,7 +41,7 @@ class GUI(QtWidgets.QWidget):
         name_l = QtWidgets.QLabel(self)
         name_l.setText("Nimi: ")
         email_l = QtWidgets.QLabel(self)
-        email_l.setText("E-Mail: ")
+        email_l.setText("Sähköposti: ")
         num_l = QtWidgets.QLabel(self)
         num_l.setText("Puhelinnumero: ")
         date_l = QtWidgets.QLabel(self)
@@ -125,10 +125,7 @@ class GUI(QtWidgets.QWidget):
         # Reserve button
         button = QtWidgets.QPushButton("Varaa", self)
         button.setStyleSheet("background-color:#3FBA1D")
-        button.clicked.connect(lambda: self.init_reservation())
-        button.clicked.connect(lambda: self.init_customer())
-        button.clicked.connect(lambda: self.init_line())
-        button.clicked.connect(lambda: self.press_res())
+        button.clicked.connect(lambda: self.check_fields())
 
         layout.addWidget(button, 17, 1, 1, 1)
 
@@ -237,19 +234,23 @@ class GUI(QtWidgets.QWidget):
             self.is_reserved = True
             error = QtWidgets.QMessageBox()
             error.setIcon(QtWidgets.QMessageBox.Information)
-            error.setWindowTitle("Invalid reservation time")
-            error.setText("This time is already reserved. Please choose another time.")
+            error.setWindowTitle("Varattu ajankohta")
+            error.setText("Tämä aika on jo varattu, valitse toinen.")
             error.exec_()
+            return 1
+        return 0
 
     def init_line(self):
         self.line = ''
-        i = 0
         name = ''.join(self.name.text().split(" "))
         self.line += 'NAM'
         if len(name) < 10:
             self.line += '0'
         self.line += str(len(name)) + name
-        self.line += 'NUM10' + str(self.num.text())
+        self.line += 'NUM'
+        if len(self.num.text()) < 10:
+            self.line += '0'
+        self.line += str(len(self.num.text())) + self.num.text()
         self.line += 'EML' + str(len(self.email.text())) + self.email.text()
         self.line += 'DAT08' + str(self.reservation.return_date())
         self.line += 'TIM04' + str(self.reservation.return_time())
@@ -260,6 +261,7 @@ class GUI(QtWidgets.QWidget):
 
     def press_res(self):
         # Clear fields
+        self.to_today()
         self.spdd.setCurrentText("")
         self.frq.setCurrentText("")
         if self.vakiovuoro.isChecked():
@@ -269,7 +271,8 @@ class GUI(QtWidgets.QWidget):
         self.name.clear()
         self.email.clear()
         self.num.clear()
-        self.date.clear()
+        self.date.setText('{}.{}.{}'.format(self.calendar.selectedDate().day(), self.calendar.selectedDate().month(),
+                                            self.calendar.selectedDate().year()))
         self.time.clear()
         self.count.clear()
         self.length.setCurrentText("")
@@ -310,9 +313,66 @@ class GUI(QtWidgets.QWidget):
                 popup_text = "Syötä nimi jonka varaukset haluat nähdä 'Nimi:' kenttään."
                 break
             else:
-                popup_text = "Ei varauksia annetulla nimellä."
+                popup_text = "Ei varauksia annetulla nimellä: " + self.name.text()
         if len(chunk_IO.customerlist) == 0:
             popup_text = "Ei varauksia annetulla nimellä."
         reservations_popup.setText(popup_text)
         reservations_popup.exec_()
-        self.name.clear()
+
+    def check_fields(self):
+        error = QtWidgets.QMessageBox()
+        error.setIcon(QtWidgets.QMessageBox.Information)
+        error.setWindowTitle("Virhe")
+        check = self.check_empty()
+        if check == 0:
+            if self.init_reservation() == 0:
+                self.init_customer()
+                self.init_line()
+                self.press_res()
+        elif check == 1:
+            error.setText("Täytä kaikki vaaditut kentät.")
+            error.exec_()
+        elif check == 2:
+            error.setText("Virheellinen aika, anna oikea aika.")
+            error.exec_()
+        elif check == 3:
+            error.setText("Varausta ei voi tehdä mennelle päivämäärälle. Valitse uusi päivämäärä.")
+            error.exec_()
+
+    def check_empty(self):
+        if self.spdd.currentText() == '' or self.name.text() == '' or self.email.text() == '' or self.num.text() == '' or self.date.text() == '' or self.time.text() == '' or self.length.currentText() == '':
+            print("Fields not filled.")
+            return 1
+        elif self.vakiovuoro.isChecked():
+            if self.frq.currentText() == '' or self.count.text() == '':
+                print("Vakiovuoro not filled.")
+                return 1
+        else:
+            return self.check_date()
+
+    def check_date(self):
+        current_day = QtCore.QDate.currentDate().day()
+        current_month = QtCore.QDate.currentDate().month()
+        current_year = QtCore.QDate.currentDate().year()
+        date_components = self.date.text().split(".")
+        if int(date_components[2]) >= current_year and int(date_components[1]) >= current_month and int(date_components[0]) >= current_day:
+            return self.check_time()
+        else:
+            return 3
+
+    def check_time(self):
+        time_components = self.time.text().split(":")
+        if len(time_components) != 2:
+            print("Invalid time!")
+            return 2
+        try:
+            time_components[0] = int(time_components[0])
+            time_components[1] = int(time_components[1])
+            if 0 < time_components[0] < 24 and 0 <= time_components[1] < 60:
+                return 0
+            else:
+                print("Invalid time!")
+                return 2
+        except ValueError:
+            print("Invalid time!")
+            return 2

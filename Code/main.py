@@ -34,9 +34,7 @@ def main():
     gui = GUI()
     gui.show()
 
-    print("{}c{}r".format(len(chunk_IO.get_customers()),len(chunk_IO.get_reservations())))
-    # for i in customerlist:
-    #    print(i.get_name())
+    print("{}c{}r".format(len(chunk_IO.get_customers()), len(chunk_IO.get_reservations())))
 
     sys.exit(app.exec_())
 
