@@ -80,7 +80,8 @@ class ChunkIO:
     def check_reservation(self, reservation):
         date = str(reservation.get_day())+str(reservation.get_month())+str(reservation.get_year())
         time = str(reservation.get_hour()) + str(reservation.get_minute())
-        time_comparison = reservation.get_hour()*60+reservation.get_minute()
+        starttime = reservation.get_hour()*60+reservation.get_minute()
+        endtime = starttime + reservation.get_length()
         sport = reservation.get_sport()
         is_date_time_taken = False
         for x in self.reservationlist:
@@ -89,7 +90,10 @@ class ChunkIO:
             list_starttime = x.get_hour()*60+x.get_minute()
             list_endttime = list_starttime + x.get_length()
             list_sport = x.get_sport()
-            if date == list_date and list_starttime <= time_comparison < list_endttime and sport == list_sport:
+            if date == list_date and list_starttime <= starttime < list_endttime and sport == list_sport:
+                is_date_time_taken = True
+                break
+            elif date == list_date and starttime <= list_starttime < endtime and sport == list_sport:
                 is_date_time_taken = True
                 break
         return is_date_time_taken
