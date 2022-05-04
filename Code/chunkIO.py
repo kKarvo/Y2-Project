@@ -34,6 +34,11 @@ class ChunkIO:
                             sport_number = int(self.read_fully(chunk_size, input))
                         except ValueError:
                             print("Save file corrupted.")
+                    elif chunk_name == 'LEN':
+                        try:
+                            length = int(self.read_fully(chunk_size, input))
+                        except ValueError:
+                            print("Save file corrupted.")
                     elif chunk_name == 'PRC':
                         try:
                             price = int(self.read_fully(chunk_size, input))
@@ -42,12 +47,12 @@ class ChunkIO:
                     chunk_name = self.get_chunk_name(input)
                     chunk_size = self.get_chunk_size(input)
                 reservation = Reservation()
-                reservation.set_variables(sport_number, date, time, price)
+                reservation.set_variables(sport_number, date, time, price, length)
                 if not self.check_reservation(reservation):
                     self.reservationlist.append(reservation)
                     self.add_customer(name, email, num, reservation)
             except:
-                print("Reading data file failed.")
+                print("Empty file.")
 
     def get_customers(self):
         return self.customerlist

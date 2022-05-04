@@ -9,10 +9,12 @@ class Reservation:
         self.hour = 0
         self.minute = 0
         self.price = 0
+        self.length = 0
 
-    def set_variables(self, sport, date, time, price):
+    def set_variables(self, sport, date, time, price, length):
         self.sport = sport
         self.price = price
+        self.length = length
         datestring = date.split(".")
         if len(datestring) == 3:
             try:
@@ -81,6 +83,9 @@ class Reservation:
     def get_price(self):
         return self.price
 
+    def get_length(self):
+        return self.length
+
     def return_date(self):
         ret = ''
         if self.day < 10:
@@ -110,5 +115,14 @@ class Reservation:
         if self.price < 10:
             ret += '0'
         ret += str(self.price)
+        ret = ret.split(".")[0]
         return ret
 
+    def return_len(self):
+        ret = ''
+        if self.length < 100:
+            ret += '02'
+        else:
+            ret += '0' + str(len(str(self.length)))
+        ret += str(self.length)
+        return ret

@@ -31,7 +31,7 @@ class GUI(QtWidgets.QWidget):
 
         self.spdd = QtWidgets.QComboBox(self)
         self.spdd.addItems(
-            ["", "Tennis (30€/h)", "Sulkapallo (14€/h)", "Padel (34€/h)", "Squash (14€/h)", "Pöytätennis (10€/h)"])
+            ["", "Tennis (30€/h)", "Sulkapallo (14€/h)", "Padel (32€/h)", "Squash (14€/h)", "Pöytätennis (10€/h)"])
         self.spdd.setCurrentText("")
 
         layout.addWidget(sport_l, 0, 0, 1, 2)
@@ -48,11 +48,15 @@ class GUI(QtWidgets.QWidget):
         date_l.setText("Varauksen pvm (pp.kk.vvvv): ")
         time_l = QtWidgets.QLabel(self)
         time_l.setText("Aika (HH:MM): ")
+        length_l = QtWidgets.QLabel(self)
+        length_l.setText("Varauksen pituus: ")
         self.name = QtWidgets.QLineEdit(self)
         self.email = QtWidgets.QLineEdit(self)
         self.num = QtWidgets.QLineEdit(self)
         self.date = QtWidgets.QLineEdit(self)
         self.time = QtWidgets.QLineEdit(self)
+        self.length = QtWidgets.QComboBox(self)
+        self.length.addItems(['', '60 min', '90 min', '120 min', '150 min', '180 min'])
 
         layout.addWidget(name_l, 2, 0, 1, 2)
         layout.addWidget(self.name, 3, 0, 1, 2)
@@ -64,16 +68,18 @@ class GUI(QtWidgets.QWidget):
         layout.addWidget(self.date, 9, 0, 1, 2)
         layout.addWidget(time_l, 10, 0, 1, 2)
         layout.addWidget(self.time, 11, 0, 1, 2)
+        layout.addWidget(length_l, 10, 1, 1, 1)
+        layout.addWidget(self.length, 11, 1, 1, 1)
 
         # Vakiovuoro checkbox
         self.vakiovuoro = QtWidgets.QCheckBox("Vakiovuoro", self)
         layout.addWidget(self.vakiovuoro, 12, 0, 1, 1)
-        self.vakiovuoro.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText()))
+        self.vakiovuoro.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
 
         # Racket rent
         self.rrent = QtWidgets.QCheckBox("Mailavuokra", self)
         layout.addWidget(self.rrent, 12, 1, 1, 1)
-        self.rrent.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText()))
+        self.rrent.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
 
         # Frequency
         self.frq_l = QtWidgets.QLabel(self)
@@ -111,7 +117,8 @@ class GUI(QtWidgets.QWidget):
         layout.addWidget(price_l, 16, 0, 1, 1)
         layout.addWidget(self.price_t, 17, 0, 1, 1)
 
-        self.spdd.currentTextChanged.connect(lambda: self.sprt_change(self.spdd.currentText()))
+        self.spdd.currentTextChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
+        self.length.currentTextChanged.connect(lambda:self.sprt_change(self.spdd.currentText(), self.length.currentText()))
 
         # Reserve button
         button = QtWidgets.QPushButton("Varaa", self)
@@ -169,26 +176,29 @@ class GUI(QtWidgets.QWidget):
     def calendar_date(self):
         self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
 
-    def sprt_change(self, value):
+    def sprt_change(self, value, length):
         raq = 0
+        h = 0
+        if length != '':
+            h = int(length.split(" ")[0])/60
         if value == "Tennis (30€/h)":
-            self.pr = 30
+            self.pr = 30*h
             raq = 3
             self.sport_number = 1
         elif value == "Squash (14€/h)":
-            self.pr = 14
+            self.pr = 14*h
             raq = 3
             self.sport_number = 2
         elif value == "Sulkapallo (14€/h)":
-            self.pr = 14
+            self.pr = 14*h
             raq = 3
             self.sport_number = 3
-        elif value == "Padel (34€/h)":
-            self.pr = 34
+        elif value == "Padel (32€/h)":
+            self.pr = 32*h
             raq = 4
             self.sport_number = 4
         elif value == "Pöytätennis (10€/h)":
-            self.pr = 10
+            self.pr = 10*h
             raq = 2
             self.sport_number = 5
         elif value == "":
@@ -213,7 +223,8 @@ class GUI(QtWidgets.QWidget):
     def init_reservation(self):
         self.is_reserved = False
         self.reservation = Reservation()
-        self.reservation.set_variables(self.sport_number, self.date.text(), self.time.text(), self.pr)
+        self.len = int((self.length.currentText()).split(" ")[0])
+        self.reservation.set_variables(self.sport_number, self.date.text(), self.time.text(), self.pr, self.len)
         check = chunk_IO.check_reservation(self.reservation)
         if not check:
             chunk_IO.reservationlist.append(self.reservation)
@@ -238,6 +249,7 @@ class GUI(QtWidgets.QWidget):
         self.line += 'DAT08' + str(self.reservation.return_date())
         self.line += 'TIM04' + str(self.reservation.return_time())
         self.line += 'SPO020' + str(self.sport_number)
+        self.line += 'LEN' + str(self.reservation.return_len())
         self.line += 'PRC' + str(self.reservation.return_price())
         self.line += 'END00\n'
 
@@ -255,6 +267,7 @@ class GUI(QtWidgets.QWidget):
         self.date.clear()
         self.time.clear()
         self.count.clear()
+        self.length.setCurrentText("")
         if not self.is_reserved:
             f = open('data.txt', 'a')
             f.write(self.line)
@@ -264,6 +277,7 @@ class GUI(QtWidgets.QWidget):
         reservations_popup = QtWidgets.QMessageBox()
         reservations_popup.setIcon(QtWidgets.QMessageBox.Question)
         reservations_popup.setWindowTitle("Varaushistoria")
+        popup_text = ''
         for x in chunk_IO.customerlist:
             if name == x.get_name():
                 popup_text = ''
@@ -291,6 +305,8 @@ class GUI(QtWidgets.QWidget):
                 break
             else:
                 popup_text = "Ei varauksia annetulla nimellä."
+        if len(chunk_IO.customerlist) == 0:
+            popup_text = "Ei varauksia annetulla nimellä."
         reservations_popup.setText(popup_text)
         reservations_popup.exec_()
         self.name.clear()
