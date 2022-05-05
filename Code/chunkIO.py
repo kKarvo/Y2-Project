@@ -52,7 +52,7 @@ class ChunkIO:
                     self.reservationlist.append(reservation)
                     self.add_customer(name, email, num, reservation)
             except:
-                print("Empty file.")
+                print("Invalid save file.")
 
     def get_customers(self):
         return self.customerlist

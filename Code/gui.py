@@ -11,13 +11,13 @@ class GUI(QtWidgets.QWidget):
         super().__init__()
         self.is_reserved = False
         self.setWindowTitle("Ajanvarausjärjestelmä")
-        layout = QtWidgets.QGridLayout()
-        self.setLayout(layout)
-        layout.setColumnStretch(0, 1)
-        layout.setColumnStretch(1, 1)
-        layout.setColumnStretch(2, 2)
-        layout.setColumnStretch(3, 1)
-        layout.setColumnStretch(4, 1)
+        self.layout = QtWidgets.QGridLayout()
+        self.setLayout(self.layout)
+        self.layout.setColumnStretch(0, 1)
+        self.layout.setColumnStretch(1, 1)
+        self.layout.setColumnStretch(2, 2)
+        self.layout.setColumnStretch(3, 1)
+        self.layout.setColumnStretch(4, 1)
         self.setGeometry(2210-1920, 290, 1340, 500)
 
         self.line = ''
@@ -26,30 +26,23 @@ class GUI(QtWidgets.QWidget):
         self.sport_number = 0
 
         # Sport dropdown
-        sport_l = QtWidgets.QLabel(self)
-        sport_l.setText("Laji: ")
+        sport_l = QtWidgets.QLabel("Laji: ", self)
 
         self.spdd = QtWidgets.QComboBox(self)
         self.spdd.addItems(
             ["", "Tennis (30€/h)", "Sulkapallo (14€/h)", "Padel (32€/h)", "Squash (14€/h)", "Pöytätennis (10€/h)"])
         self.spdd.setCurrentText("")
 
-        layout.addWidget(sport_l, 0, 0, 1, 2)
-        layout.addWidget(self.spdd, 1, 0, 1, 2)
+        self.layout.addWidget(sport_l, 0, 0, 1, 2)
+        self.layout.addWidget(self.spdd, 1, 0, 1, 2)
 
         # Text boxes for contact info
-        name_l = QtWidgets.QLabel(self)
-        name_l.setText("Nimi: ")
-        email_l = QtWidgets.QLabel(self)
-        email_l.setText("Sähköposti: ")
-        num_l = QtWidgets.QLabel(self)
-        num_l.setText("Puhelinnumero: ")
-        date_l = QtWidgets.QLabel(self)
-        date_l.setText("Varauksen pvm (pp.kk.vvvv): ")
-        time_l = QtWidgets.QLabel(self)
-        time_l.setText("Aika (HH:MM): ")
-        length_l = QtWidgets.QLabel(self)
-        length_l.setText("Varauksen pituus: ")
+        name_l = QtWidgets.QLabel("Nimi :", self)
+        email_l = QtWidgets.QLabel("Sähköposti: ", self)
+        num_l = QtWidgets.QLabel("Puhelinnumero: ", self)
+        date_l = QtWidgets.QLabel("Varauksen pvm (pp.kk.vvvv): ", self)
+        time_l = QtWidgets.QLabel("Aika (HH:MM): ", self)
+        length_l = QtWidgets.QLabel("Varauksen pituus: ", self)
         self.name = QtWidgets.QLineEdit(self)
         self.email = QtWidgets.QLineEdit(self)
         self.num = QtWidgets.QLineEdit(self)
@@ -60,64 +53,54 @@ class GUI(QtWidgets.QWidget):
         self.length = QtWidgets.QComboBox(self)
         self.length.addItems(['', '60 min', '90 min', '120 min', '150 min', '180 min'])
 
-        layout.addWidget(name_l, 2, 0, 1, 2)
-        layout.addWidget(self.name, 3, 0, 1, 2)
-        layout.addWidget(email_l, 4, 0, 1, 2)
-        layout.addWidget(self.email, 5, 0, 1, 2)
-        layout.addWidget(num_l, 6, 0, 1, 2)
-        layout.addWidget(self.num, 7, 0, 1, 2)
-        layout.addWidget(date_l, 8, 0, 1, 2)
-        layout.addWidget(self.date, 9, 0, 1, 2)
-        layout.addWidget(time_l, 10, 0, 1, 2)
-        layout.addWidget(self.time, 11, 0, 1, 2)
-        layout.addWidget(length_l, 10, 1, 1, 1)
-        layout.addWidget(self.length, 11, 1, 1, 1)
+        self.layout.addWidget(name_l, 2, 0, 1, 2)
+        self.layout.addWidget(self.name, 3, 0, 1, 2)
+        self.layout.addWidget(email_l, 4, 0, 1, 2)
+        self.layout.addWidget(self.email, 5, 0, 1, 2)
+        self.layout.addWidget(num_l, 6, 0, 1, 2)
+        self.layout.addWidget(self.num, 7, 0, 1, 2)
+        self.layout.addWidget(date_l, 8, 0, 1, 2)
+        self.layout.addWidget(self.date, 9, 0, 1, 2)
+        self.layout.addWidget(time_l, 10, 0, 1, 2)
+        self.layout.addWidget(self.time, 11, 0, 1, 2)
+        self.layout.addWidget(length_l, 10, 1, 1, 1)
+        self.layout.addWidget(self.length, 11, 1, 1, 1)
 
         # Vakiovuoro checkbox
         self.vakiovuoro = QtWidgets.QCheckBox("Vakiovuoro", self)
-        layout.addWidget(self.vakiovuoro, 12, 0, 1, 1)
+        self.layout.addWidget(self.vakiovuoro, 12, 0, 1, 1)
         self.vakiovuoro.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
 
         # Racket rent
         self.rrent = QtWidgets.QCheckBox("Mailavuokra", self)
-        layout.addWidget(self.rrent, 12, 1, 1, 1)
+        self.layout.addWidget(self.rrent, 12, 1, 1, 1)
         self.rrent.stateChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
 
         # Frequency
-        self.frq_l = QtWidgets.QLabel(self)
-        self.frq_l.setText("Toistettavuus: ")
-
-        self.frq = QtWidgets.QComboBox(self)
-        self.frq.addItems(["", "Viikko", "Kuukausi"])
-        self.frq.setCurrentText("")
+        self.frq_l = QtWidgets.QLabel("Toistettavuus: ", self)
 
         self.count = QtWidgets.QLineEdit(self)
 
-        self.text = QtWidgets.QLabel(self)
-        self.text.setText("ajanjakson välein.")
+        self.text = QtWidgets.QLabel("viikon välein.", self)
 
-        layout.addWidget(self.frq_l, 13, 0, 1, 1)
-        layout.addWidget(self.frq, 14, 0, 1, 1)
-        layout.addWidget(self.count, 15, 0, 1, 1)
-        layout.addWidget(self.text, 15, 1, 1, 1)
+        self.layout.addWidget(self.frq_l, 13, 0, 1, 1)
+        self.layout.addWidget(self.count, 14, 0, 1, 1)
+        self.layout.addWidget(self.text, 14, 1, 1, 1)
         self.frq_l.hide()
-        self.frq.hide()
         self.count.hide()
         self.text.hide()
 
-        self.frq.currentTextChanged.connect(lambda: self.frq_change(self.frq.currentText()))
         self.vakiovuoro.stateChanged.connect(lambda: self.vv_change())
 
         # Price
-        price_l = QtWidgets.QLabel(self)
-        price_l.setText("Hinta: ")
+        price_l = QtWidgets.QLabel("Hinta: ", self)
 
         self.price_t = QtWidgets.QLineEdit(self)
         self.price_t.setText("")
         self.price_t.setReadOnly(True)
 
-        layout.addWidget(price_l, 16, 0, 1, 1)
-        layout.addWidget(self.price_t, 17, 0, 1, 1)
+        self.layout.addWidget(price_l, 15, 0, 1, 1)
+        self.layout.addWidget(self.price_t, 16, 0, 1, 1)
 
         self.spdd.currentTextChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
         self.length.currentTextChanged.connect(lambda: self.sprt_change(self.spdd.currentText(), self.length.currentText()))
@@ -127,34 +110,35 @@ class GUI(QtWidgets.QWidget):
         button.setStyleSheet("background-color:#3FBA1D")
         button.clicked.connect(lambda: self.check_fields())
 
-        layout.addWidget(button, 17, 1, 1, 1)
+        self.layout.addWidget(button, 16, 1, 1, 1)
 
         # Calendar
         self.calendar.setGridVisible(True)
         self.calendar.selectionChanged.connect(self.calendar_date)
-        layout.addWidget(self.calendar, 0, 3, 17, 2)
+        self.layout.addWidget(self.calendar, 0, 3, 16, 2)
 
-        self.chosendate = QtWidgets.QLabel(self)
-        self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
-        layout.addWidget(self.chosendate, 0, 2, 1, 1)
+        self.chosendate = QtWidgets.QLabel("Varaukset", self)
+        self.layout.addWidget(self.chosendate, 0, 2, 1, 1)
 
         # Today button
         self.today = QtWidgets.QPushButton("Tänään")
-        layout.addWidget(self.today, 17, 4, 1, 1)
+        self.layout.addWidget(self.today, 16, 4, 1, 1)
         self.today.clicked.connect(lambda: self.to_today())
 
         # History button
         self.history = QtWidgets.QPushButton("Historia")
-        layout.addWidget(self.history, 17, 3, 1, 1)
+        self.layout.addWidget(self.history, 16, 3, 1, 1)
         self.history.clicked.connect(lambda: self.show_history())
+
+        # Middle column for reservations.
+        self.reservationlist = []
+        self.show_reservations()
 
     def vv_change(self):
         self.frq_l.hide()
-        self.frq.hide()
         self.count.hide()
         self.text.hide()
         if self.vakiovuoro.isChecked():
-            self.frq.show()
             self.frq_l.show()
             self.count.show()
             self.text.show()
@@ -175,8 +159,9 @@ class GUI(QtWidgets.QWidget):
     def calendar_date(self):
         temp_date = self.calendar.selectedDate()
         string = '{}.{}.{}'.format(temp_date.day(), temp_date.month(), temp_date.year())
-        self.chosendate.setText(str(self.calendar.selectedDate().toPyDate()))
         self.date.setText(string)
+        self.hide_reservations()
+        self.show_reservations()
 
     def sprt_change(self, value, length):
         raq = 0
@@ -263,7 +248,6 @@ class GUI(QtWidgets.QWidget):
         # Clear fields
         self.to_today()
         self.spdd.setCurrentText("")
-        self.frq.setCurrentText("")
         if self.vakiovuoro.isChecked():
             self.vakiovuoro.toggle()
         if self.rrent.isChecked():
@@ -276,10 +260,9 @@ class GUI(QtWidgets.QWidget):
         self.time.clear()
         self.count.clear()
         self.length.setCurrentText("")
+        self.hide_reservations()
         print("{}c{}r".format(len(chunk_IO.get_customers()), len(chunk_IO.get_reservations())))
-        if not self.is_reserved:
-            f = open('data.txt', 'a')
-            f.write(self.line)
+        self.write_line()
 
     def show_history(self):
         name = ''.join(self.name.text().split(" "))
@@ -325,28 +308,71 @@ class GUI(QtWidgets.QWidget):
         error.setWindowTitle("Virhe")
         check = self.check_empty()
         if check == 0:
-            if self.init_reservation() == 0:
-                self.init_customer()
-                self.init_line()
+            x = self.check_vakiovuoro()
+            i = 0
+            if x > 0:
+                while i < x:
+                    temp = self.date.text().split(".")
+                    temp[0] = int(temp[0])
+                    temp[1] = int(temp[1])
+                    temp[2] = int(temp[2])
+                    date = QtCore.QDate(temp[2], temp[1], temp[0])
+                    date = date.addDays(i*7)
+                    date = str(date.toPyDate()).split("-")
+                    self.date.setText('{}.{}.{}'.format(date[2], date[1], date[0]))
+                    i += 1
+                    if self.init_reservation() == 0:
+                        self.init_customer()
+                        self.init_line()
+                        self.write_line()
                 self.press_res()
+                notification = QtWidgets.QMessageBox()
+                notification.setIcon(QtWidgets.QMessageBox.Information)
+                notification.setWindowTitle("Vakiovuoro varattu")
+                notification.setText("Vakiovuoro onnistuneesti varattu seuraavaksi 3 kuukaudeksi.")
+                notification.exec_()
+            elif x == -1:
+                error.setText("Anna vakiovuorovälille jokin arvo.")
+                error.exec_()
+                return 0
+            else:
+                if self.init_reservation() == 0:
+                    self.init_customer()
+                    self.init_line()
+                    self.press_res()
         elif check == 1:
-            error.setText("Täytä kaikki vaaditut kentät.")
+            error.setText("Täytä kaikki kentät.")
             error.exec_()
         elif check == 2:
-            error.setText("Virheellinen aika, anna oikea aika.")
+            error.setText("Virheellinen aika, anna aika oikeassa muodossa (HH:MM).")
             error.exec_()
         elif check == 3:
             error.setText("Varausta ei voi tehdä mennelle päivämäärälle. Valitse uusi päivämäärä.")
             error.exec_()
+        elif check == 4:
+            error.setText("Varaukset täytyy tehdä 15 minuutin välein.\nEsim. klo 12:00, 12:15, 12:30 tai 12:45.")
+            error.exec_()
+        elif check == 5:
+            error.setText("Palloiluhalli on auki 7-20.\nVaraus voi alkaa aikaisintaan klo 07:00 ja varauksen täytyy loppua viimeistään klo 20:00.")
+            error.exec_()
+
+    def check_vakiovuoro(self):
+        if self.vakiovuoro.isChecked():
+            try:
+                x = int(self.count.text())
+                j = 12/x
+                k = int(j)
+                return int(12/x)
+            except ValueError:
+                print("Count not integer.")
+                return -1
+        else:
+            return 0
 
     def check_empty(self):
         if self.spdd.currentText() == '' or self.name.text() == '' or self.email.text() == '' or self.num.text() == '' or self.date.text() == '' or self.time.text() == '' or self.length.currentText() == '':
             print("Fields not filled.")
             return 1
-        elif self.vakiovuoro.isChecked():
-            if self.frq.currentText() == '' or self.count.text() == '':
-                print("Vakiovuoro not filled.")
-                return 1
         else:
             return self.check_date()
 
@@ -355,7 +381,11 @@ class GUI(QtWidgets.QWidget):
         current_month = QtCore.QDate.currentDate().month()
         current_year = QtCore.QDate.currentDate().year()
         date_components = self.date.text().split(".")
-        if int(date_components[2]) >= current_year and int(date_components[1]) >= current_month and int(date_components[0]) >= current_day:
+        if int(date_components[2]) > current_year:
+            return self.check_time()
+        elif int(date_components[2]) == current_year and int(date_components[1]) > current_month:
+            return self.check_time()
+        elif int(date_components[2]) == current_year and int(date_components[1]) == current_month and int(date_components[0]) >= current_day:
             return self.check_time()
         else:
             return 3
@@ -369,10 +399,64 @@ class GUI(QtWidgets.QWidget):
             time_components[0] = int(time_components[0])
             time_components[1] = int(time_components[1])
             if 0 < time_components[0] < 24 and 0 <= time_components[1] < 60:
-                return 0
+                # Check if reservation ends before 20:00 (20*60=1200)
+                x = time_components[0] * 60 + time_components[1]
+                y = int(self.length.currentText().split(" ")[0])
+                if time_components[0] >= 7 and x + y <= 1200:
+                    # Check if reservation is done on minutes 00, 15, 30 or 45.
+                    if time_components[1] % 15 == 0:
+                        return 0
+                    else:
+                        return 4
+                else:
+                    return 5
             else:
                 print("Invalid time!")
                 return 2
         except ValueError:
             print("Invalid time!")
             return 2
+
+    def show_reservations(self):
+        i = 0
+        temp_date = self.calendar.selectedDate()
+        chosendate = [temp_date.day(), temp_date.month(), temp_date.year()]
+        clist = chunk_IO.get_reservations()
+        for reservation in clist:
+            curdate = reservation.return_date()
+            reservationdate = [int(curdate[0:2]), int(curdate[2:4]), int(curdate[4:8])]
+            if chosendate == reservationdate:
+                curtime = reservation.return_time()
+                curhour = int(curtime[0:2])
+                curminute = int(curtime[2:4])
+                temptime = curhour*60+curminute
+                endtime = temptime + reservation.get_length()
+                minute = endtime % 60
+                minutestring = ''
+                if minute < 10:
+                    minutestring += '0'
+                minutestring += str(minute)
+                hour = int((endtime - minute)/60)
+                if hour >= 24:
+                    hour -= 24
+                hourstring = ''
+                if hour < 10:
+                    hourstring += '0'
+                hourstring += str(hour)
+                x = reservation.return_sport()
+                print_str = '{} {}:{}-{}:{}'.format(x, curtime[0:2], curtime[2:4], hourstring, minutestring)
+                label = QtWidgets.QLabel(print_str, self)
+                self.reservationlist.append(label)
+                self.layout.addWidget(label, i+1, 2, 1, 1)
+                i += 1
+
+    def hide_reservations(self):
+        for i in self.reservationlist:
+            i.hide()
+
+    def write_line(self):
+        f = open('data.txt', 'a')
+        b = open('data.txt', 'r')
+        lines = b.readlines()
+        if self.line not in lines:
+            f.write(self.line)

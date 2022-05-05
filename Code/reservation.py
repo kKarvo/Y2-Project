@@ -119,3 +119,17 @@ class Reservation:
             ret += '0' + str(len(str(self.length)))
         ret += str(self.length)
         return ret
+
+    def return_sport(self):
+        ret = ''
+        if self.sport == 1:
+            ret += 'Tennis'
+        elif self.sport == 2:
+            ret += 'Squash'
+        elif self.sport == 3:
+            ret += 'Sulkapallo'
+        elif self.sport == 4:
+            ret += 'Padel'
+        elif self.sport == 5:
+            ret += 'Pöytätennis'
+        return ret
