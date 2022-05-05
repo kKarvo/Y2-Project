@@ -23,7 +23,7 @@ class Reservation:
                     datestring[i] = int(x)
                     i += 1
             except ValueError:
-                print("Date format error.")
+                print("Date format error. Date not in integer form.")
             if datestring[0] < 10:
                 datestring[0] = '0' + str(datestring[0])
             if datestring[1] < 10:
@@ -35,32 +35,25 @@ class Reservation:
         else:
             date_components = "".join(date.split("."))
         if len(date_components) != 8:
-            print("Date format error.")
+            print("Date format error. Fix date into DDMMYYY format.")
             raise ValueError
-        try:
-            self.day = int(date_components[0:2])
-        except ValueError:
-            print("Date format error.")
-        try:
-            self.month = int(date_components[2:4])
-        except ValueError:
-            print("Date format error.")
-        try:
-            self.year = int(date_components[4:8])
-        except ValueError:
-            print("Date format error.")
+        self.day = int(date_components[0:2])
+        self.month = int(date_components[2:4])
+        self.year = int(date_components[4:8])
         time_components = "".join(time.split(":"))
-        if len(time_components) != 4:
+        if len(time_components) == 4 or len(time_components) == 3:
+            try:
+                if len(time_components) == 3:
+                    self.hour = int(time_components[0])
+                    self.minute = int(time_components[1:3])
+                elif len(time_components) == 4:
+                    self.hour = int(time_components[0:2])
+                    self.minute = int(time_components[2:4])
+            except ValueError:
+                print("Time format error. Time not in integer form.")
+        else:
             print("Time format error.")
             raise ValueError
-        try:
-            self.hour = int(time_components[0:2])
-        except ValueError:
-            print("Time format error.")
-        try:
-            self.minute = int(time_components[2:4])
-        except ValueError:
-            print("Time format error.")
 
     def get_sport(self):
         return self.sport
