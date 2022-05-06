@@ -1,7 +1,5 @@
-from customer import Customer
 from reservation import Reservation
 from settings import chunk_IO
-
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -37,10 +35,10 @@ class GUI(QtWidgets.QWidget):
         self.layout.addWidget(self.spdd, 1, 0, 1, 2)
 
         # Text boxes for contact info
-        name_l = QtWidgets.QLabel("Nimi :", self)
+        name_l = QtWidgets.QLabel("Nimi: ", self)
         email_l = QtWidgets.QLabel("Sähköposti: ", self)
         num_l = QtWidgets.QLabel("Puhelinnumero: ", self)
-        date_l = QtWidgets.QLabel("Varauksen pvm (pp.kk.vvvv): ", self)
+        date_l = QtWidgets.QLabel("Varauksen päivämäärä: ", self)
         time_l = QtWidgets.QLabel("Aika (HH:MM): ", self)
         length_l = QtWidgets.QLabel("Varauksen pituus: ", self)
         self.name = QtWidgets.QLineEdit(self)
@@ -78,9 +76,7 @@ class GUI(QtWidgets.QWidget):
 
         # Frequency
         self.frq_l = QtWidgets.QLabel("Toistettavuus: ", self)
-
         self.count = QtWidgets.QLineEdit(self)
-
         self.text = QtWidgets.QLabel("viikon välein.", self)
 
         self.layout.addWidget(self.frq_l, 13, 0, 1, 1)
@@ -117,7 +113,7 @@ class GUI(QtWidgets.QWidget):
         self.calendar.selectionChanged.connect(self.calendar_date)
         self.layout.addWidget(self.calendar, 0, 3, 16, 2)
 
-        self.chosendate = QtWidgets.QLabel("Varaukset", self)
+        self.chosendate = QtWidgets.QLabel("Varaukset:", self)
         self.layout.addWidget(self.chosendate, 0, 2, 1, 1)
 
         # Today button
@@ -135,6 +131,7 @@ class GUI(QtWidgets.QWidget):
         self.show_reservations()
 
     def vv_change(self):
+        # Shows and hides widgetse according to vakiovuoro checkbox
         self.frq_l.hide()
         self.count.hide()
         self.text.hide()
@@ -143,20 +140,13 @@ class GUI(QtWidgets.QWidget):
             self.count.show()
             self.text.show()
 
-    def frq_change(self, value):
-        content = ""
-        if value == "":
-            content = "ajanjakson"
-        elif value == "Viikko":
-            content = "viikon"
-        elif value == "Kuukausi":
-            content = "kuukauden"
-        self.text.setText(content + " välein.")
-
     def to_today(self):
+        # Sets calendar selected date to today
         self.calendar.setSelectedDate(QtCore.QDate.currentDate())
 
     def calendar_date(self):
+        # Sets date string. Includes hiding and showing middle column reservations
+        # when new date is selected.
         temp_date = self.calendar.selectedDate()
         string = '{}.{}.{}'.format(temp_date.day(), temp_date.month(), temp_date.year())
         self.date.setText(string)
@@ -164,6 +154,8 @@ class GUI(QtWidgets.QWidget):
         self.show_reservations()
 
     def sprt_change(self, value, length):
+        # Updates price according to sport, reservation length
+        # and wether or not the user rents a racket.
         raq = 0
         h = 0
         if length != '':
@@ -204,10 +196,13 @@ class GUI(QtWidgets.QWidget):
             self.price_t.setText(str(self.pr) + "€/krt")
 
     def init_customer(self):
+        # Initializes customer if reservation is free.
         if not self.is_reserved:
             chunk_IO.add_customer(''.join(self.name.text().split(' ')), self.email.text(), self.num.text(), self.reservation)
 
     def init_reservation(self):
+        # Checks if reservation overlaps with another one.
+        # If not, initializes the reservation.
         self.is_reserved = False
         self.reservation = Reservation()
         self.len = int((self.length.currentText()).split(" ")[0])
@@ -226,6 +221,7 @@ class GUI(QtWidgets.QWidget):
         return 0
 
     def init_line(self):
+        # Initializes line which is to be written into data.txt
         self.line = ''
         name = ''.join(self.name.text().split(" "))
         self.line += 'NAM'
@@ -245,7 +241,8 @@ class GUI(QtWidgets.QWidget):
         self.line += 'END00\n'
 
     def press_res(self):
-        # Clear fields
+        # Clears fields, sets date to today and calls write_line().
+        # Also prints current amount of customers and reservations into console.
         self.to_today()
         self.spdd.setCurrentText("")
         if self.vakiovuoro.isChecked():
@@ -265,6 +262,7 @@ class GUI(QtWidgets.QWidget):
         self.write_line()
 
     def show_history(self):
+        # Shows the reservation history of a user.
         name = ''.join(self.name.text().split(" "))
         reservations_popup = QtWidgets.QMessageBox()
         reservations_popup.setIcon(QtWidgets.QMessageBox.Question)
@@ -367,7 +365,7 @@ class GUI(QtWidgets.QWidget):
                 print("Count not integer.")
                 return -1
         else:
-            return 0
+            return 1
 
     def check_empty(self):
         if self.spdd.currentText() == '' or self.name.text() == '' or self.email.text() == '' or self.num.text() == '' or self.date.text() == '' or self.time.text() == '' or self.length.currentText() == '':

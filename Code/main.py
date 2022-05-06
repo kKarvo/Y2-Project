@@ -2,27 +2,7 @@ import sys
 from settings import chunk_IO
 from PyQt5.QtWidgets import QApplication
 
-from io import StringIO
-from customer import Customer
-from reservation import Reservation
-from chunkIO import ChunkIO
-
 from gui import GUI
-
-
-def read_fully(count, input):
-    chars = input.read(count)
-    if len(chars) != count:
-        raise OSError("Unexpected end of file.")
-    return ''.join(chars)
-
-
-def get_chunk_name(input):
-    return ''.join(input.read(3))
-
-
-def get_chunk_size(input):
-    return int(''.join(input.read(2)))
 
 
 def main():
