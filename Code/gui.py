@@ -365,7 +365,7 @@ class GUI(QtWidgets.QWidget):
                 print("Count not integer.")
                 return -1
         else:
-            return 1
+            return 0
 
     def check_empty(self):
         if self.spdd.currentText() == '' or self.name.text() == '' or self.email.text() == '' or self.num.text() == '' or self.date.text() == '' or self.time.text() == '' or self.length.currentText() == '':
