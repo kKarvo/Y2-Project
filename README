@@ -1,33 +1,24 @@
-Varausjärjestelmä
+#Varausjärjestelmä
 
-Checkpoint2
 
-## Tämänhetkiset ominaisuudet
+## Tiedosto- ja kansiorakenne
 
-Tässä vaiheessa ohjelman käyttöliittymä on tehty. Keskimmäiseen paneeliin vielä lisätään näkymä päivän vapaista ajoista.
-Tässä vaiheessa itse ohjelmalla ei voi tehdä paljoa, mutta käyttöliittymään voi laittaa varaukselle tarvittavat tiedot
-ja varaa-nappi tyhjentää kentät seuraavaa varausta varten. Kalenterista voi myös valita päiviä ja päivä päivittyy
-keskimmäiseen paneelin. Tänään-nappi asettaa kalenterin järjestelmän asetettuun päivään.
+Code kansiosta löytyy koodia sisältävät tiedostot sekä data.txt, joka sisältää lohkomuodossa tallennetut varaukset.
+Code kansiossa on chunkIO.py, customer.py, gui.py, main.py, reservation.py, settings.py ja test.py.
+Dokumentaatio kansiosta puolestaan löytyy projektin suunnitelma sekä lopullinen dokumentaatio.
+Kaikki koodi koodi kansiossa on itse kirjoitettua.
 
-Checkpoint 2 update:
-Taustaohjelmistoa alettu tekemään, vielä vajanaista. Nyt kuitenkin ohjelma lisää tekstitiedostosta luetut lohkoittain kerrotut tiedot ja tekee niiden avulla varauksia. 
+## Asennusohje
+
+Ohjelma käyttää vain PyQt5 kirjastoa.
 
 ## Käyttöohje
 
-Ohjelman voi ajaa.
-Ohjelma käynnistetään ajamalla main-funktio. Varmista, että main funktiossa GUI on importattu gui2 tiedostosta.
-
-Sama kuin viimeksi mutta GUI importattu gui tiedostosta, gui2 tiedostoa ei enää ole. OHjelman pitäisi pyöriä kaatumatta, mutta käyttöliittymään kirjoitetut tiedot eivät vielä tallennu main funktiossa sijaitseviin listoihin. Saatan luoda chunkIO tyyppisen tiedoston johon tallentaisin kaiken helpommin ja jossa käsittelisin kaiken lohkopohjaisen lukemisen mikä nyt on vielä mainissa.
-
-## Aikataulu
-
-Tähän mennessä GUI:n luomiseen olen käyttänyt noin 9h.
-Muutoksia aikatauluun ei ole ilmennyt. 
-Käyttänyt GUI:n hiomiseen ja backendin tekemiseen noin. 8h. Ei muutoksia aikataulussa vielä. 
-
-
-
-## Muuta
-
-Käyttöliittymään tuli muutos, missä loin kolmannen paneelin, johon tulee päivän vapaat ajat näkyviin. Implementoin myös
-joitain vaativan projektin vaatimuksia työhön, sillä ne olivat luonnollisia lisätä eivätkä vieneet liikaa aikaa.
+Ohjelma ajetaan ajamalla main tiedosto. Tällöin aukeaa käyttöliittymä.
+Käyttöliittymä on heti käyttövalmis.
+Komentoriviä ei tarvitse käyttää minkään komentojen käyttämiseen.
+Komentoriviltä voi toisinaan lukea sinne tulostettavaa tietoa esim.
+virheraportteja sekä päivityksiä asiakas- ja varausmääriin.
+settings.py on ainoa asetustiedosto eikä sille tarvitse tehdä mitään.
+data.txt tiedostossa on valmiiksi jo dataa, mutta sen voi halutessaan poistaa ja 
+aloittaa tyhjästä tiedostosta.
