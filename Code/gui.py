@@ -309,20 +309,25 @@ class GUI(QtWidgets.QWidget):
             x = self.check_vakiovuoro()
             i = 0
             if x > 0:
+                y = int(self.count.text())
                 while i < x:
                     temp = self.date.text().split(".")
                     temp[0] = int(temp[0])
                     temp[1] = int(temp[1])
                     temp[2] = int(temp[2])
                     date = QtCore.QDate(temp[2], temp[1], temp[0])
-                    date = date.addDays(i*7)
-                    date = str(date.toPyDate()).split("-")
-                    self.date.setText('{}.{}.{}'.format(date[2], date[1], date[0]))
+                    tempdate = date.addDays(i*y*7)
+                    tempdate = str(tempdate.toPyDate()).split("-")
+                    self.date.setText('{}.{}.{}'.format(tempdate[2], tempdate[1], tempdate[0]))
                     i += 1
                     if self.init_reservation() == 0:
                         self.init_customer()
                         self.init_line()
                         self.write_line()
+                        date = str(date.toPyDate()).split("-")
+                        self.date.setText('{}.{}.{}'.format(date[2], date[1], date[0]))
+                    else:
+                        return 0
                 self.press_res()
                 notification = QtWidgets.QMessageBox()
                 notification.setIcon(QtWidgets.QMessageBox.Information)
