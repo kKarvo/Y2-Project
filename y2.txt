@@ -1,0 +1,32 @@
+
+NAM10KaiusKarvoNUM100404142927EML15kaius@karvo.comDAT0805052022TIM041201SPO0203LEN0260PRC0214END00
+
+
+TODO
+
+PUUTTEET
+    - Jos varaus menee keskiyön yli, esim 23:45-00:45, ei voi tehdä varausta 00:30.
+    -
+
+
+
+
+testifilu
+	KOKONAAN
+koodi
+	varauksen tarkistus
+		**onko päivämäärä mennyt??**
+		**onko päivämäärä validi**
+		**onko kellonaika validi (15min välein)??**
+		**onko samaan aikaan sama kenttä varattuna. aka onko reservationin kaikki muut tiedot kuin hinta sama?**
+		**eri pituinen varaus?!**
+		**ilmoitus jos on varattuna**
+		**käyttäjävirhe (tyhjät kentät tai väärä kellonaika)
+		**VAKIOVUORO**
+
+GUI
+	**varaukset näkyviin**
+	**ilmoitus jos varausaika varattuna**
+	**päivämäärän dynaaminen muuttaminen kalenteria klikkaamalla??**
+	**eri pituinen varaus?!**
+	
